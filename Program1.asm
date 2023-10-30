@@ -15,9 +15,8 @@ subtractmsg: .asciiz "Your difference is: "
 multiplymsg: .asciiz "Your product is: "
 dividemsg: .asciiz "Your quotient is: "
 options: .asciiz "\n1) Add \n2)Subtract \n3) Multiply\n4) Divide \nPlease select arithmetic option: "
-equalNumber: .asciiz "The first numbers are equal ."
-notEqualNumber: .asciiz "The first numbers are equal ."
-
+equalNumber: .asciiz "\n1)The first numbers are equal."
+notEqualNumber: .asciiz "\n1)The first numbers are not equal."
 
 .text
 main:
@@ -55,6 +54,10 @@ main:
         li $v0, 1
         move $a0, $s1
         syscall
+        
+        
+        
+
 
 
 #task 2
@@ -90,8 +93,7 @@ Addition:
         la $a0, ($t2)   #gets our sum and executes to screen
         syscall
 
-        li $v0, 10
-        syscall #ends program
+        j exit
 
 Subtraction:
         #subtract two user numbers
@@ -107,14 +109,13 @@ Subtraction:
         la $a0, ($t2)
         syscall
 
-        li $v0, 10
-        syscall #ends program
+        j exit
         
 Multiplication:
         #multiply the two user numbers
         move $t0, $s0   #changes our input $s0 to $t0
         move $t1, $s1
-        mult $t2, $t1, $t0 #multiplies both inputs
+        mul $t2, $t1, $t0 #multiplies both inputs
 
         li $v0, 4
         la $a0, multiplymsg #prints multiply message
@@ -124,8 +125,7 @@ Multiplication:
         la $a0, ($t2)   #gets our product and executes to screen
         syscall
 
-        li $v0, 10
-        syscall #ends program
+        j exit
         
 Division:
         #divide the two user numbers
@@ -144,15 +144,11 @@ Division:
         li $v0, 10
         syscall #ends program
         
-       
-       
-#task3
-#In this final task, you will practice how to do conditions in Assembly:
-# a)If the two user inputs from Task 1 are equal to each other, output "User inputs are the same"
-# b) If the two user inputs from Task 1 are not equal to each other, output "User inputs are different"
+        j exit
 
-#compare the user inputs 
-	bge $s0, $s1, exactlyEqual #they are equal
+exit:
+#task3
+        beq $s0, $s1, exactlyEqual #they are equal
 	bgt $s0, $s1, notEqual #they are not equal 
 	
 exactlyEqual:	
@@ -161,10 +157,16 @@ exactlyEqual:
 	la $a0, equalNumber
 	syscall
 	
-	j exit 	
+	li $v0, 10
+        syscall #ends program	
 	
 notEqual:
 	#if $s0 and $s1 are not equal, print notEqualNumber
 	li $v0, 4
 	la $a0, notEqualNumber
 	syscall
+        
+	li $v0, 10
+        syscall #ends program
+
+	
