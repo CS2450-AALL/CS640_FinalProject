@@ -10,13 +10,12 @@ prompt1: .asciiz "Please enter first integer:"
 prompt2: .asciiz "Please enter second integer:"
 inputs: .asciiz "Your inputs are: "
 comma: .asciiz ","
-additionmsg: .asciiz "Your sum is: "
-subtractmsg: .asciiz "Your difference is: "
-multiplymsg: .asciiz "Your product is: "
-dividemsg: .asciiz "Your quotient is: "
-options: .asciiz "\n1) Add \n2)Subtract \n3) Multiply\n4) Divide \nPlease select arithmetic option: "
-equalNumber: .asciiz "\n The numbers are equal."
-notEqualNumber: .asciiz "\n The numbers are not equal."
+additionmsg: .asciiz "\nYour sum is: "
+subtractmsg: .asciiz "\nYour difference is: "
+multiplymsg: .asciiz "\nYour product is: "
+dividemsg: .asciiz "\nYour quotient is: "
+equalNumber: .asciiz "\nUser inputs are the same."
+notEqualNumber: .asciiz "\nUser inputs are different."
 
 .text
 main:
@@ -61,23 +60,6 @@ main:
 
 
 #task 2
-        #print out the options to the user
-        li $v0, 4
-        la $a0, options
-        syscall
-
-        #get option selection from user
-        li $v0, 5
-        syscall
-        move $s2, $v0 #store the desired arithmetic option in $s2
-
-         #get the result based off the desired arithmetic option for the two integers
-         #branch if s2 is 1, then go to addition label 
-
-         beq $s2, 1, Addition
-         beq $s2, 2, Subtraction
-         beq $s2, 3, Multiplication
-         beq $s2, 4, Division
 
 Addition:
         #add the two user numbers
@@ -92,10 +74,8 @@ Addition:
         li $v0, 1
         la $a0, ($t2)   #gets our sum and executes to screen
         syscall
-        
-        j exit
 
- 
+
 Subtraction:
         #subtract two user numbers
         move $t0, $s0
@@ -110,7 +90,6 @@ Subtraction:
         la $a0, ($t2)
         syscall
 
-    j exit
         
 Multiplication:
         #multiply the two user numbers
@@ -126,7 +105,6 @@ Multiplication:
         la $a0, ($t2)   #gets our product and executes to screen
         syscall
 
- 	j exit
         
 Division:
         #divide the two user numbers
@@ -141,13 +119,11 @@ Division:
         li $v0, 1
         la $a0, ($t2)   #gets our quotient and executes to screen
         syscall
-        
-   	j exit
 
-exit:
+
 #task3
         beq $s0, $s1, exactlyEqual #they are equal
-	bne  $s0, $s1, notEqual #they are not equal 
+	bne $s0, $s1, notEqual #they are not equal 
 	
 exactlyEqual:	
 	#if $s0 and $s1 are exactly equal, print equalNumber
@@ -155,8 +131,7 @@ exactlyEqual:
 	la $a0, equalNumber
 	syscall
 	
-	li $v0, 10
-        syscall #ends program	
+	j exit
 	
 notEqual:
 	#if $s0 and $s1 are not equal, print notEqualNumber
@@ -166,5 +141,7 @@ notEqual:
         
 	li $v0, 10
         syscall #ends program
-
-	
+        
+exit:
+	li $v0, 10
+	syscall #end program 
