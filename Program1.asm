@@ -15,8 +15,8 @@ subtractmsg: .asciiz "Your difference is: "
 multiplymsg: .asciiz "Your product is: "
 dividemsg: .asciiz "Your quotient is: "
 options: .asciiz "\n1) Add \n2)Subtract \n3) Multiply\n4) Divide \nPlease select arithmetic option: "
-equalNumber: .asciiz "\n1)The first numbers are equal."
-notEqualNumber: .asciiz "\n1)The first numbers are not equal."
+equalNumber: .asciiz "\n The numbers are equal."
+notEqualNumber: .asciiz "\n The numbers are not equal."
 
 .text
 main:
@@ -92,9 +92,10 @@ Addition:
         li $v0, 1
         la $a0, ($t2)   #gets our sum and executes to screen
         syscall
-
+        
         j exit
 
+ 
 Subtraction:
         #subtract two user numbers
         move $t0, $s0
@@ -109,7 +110,7 @@ Subtraction:
         la $a0, ($t2)
         syscall
 
-        j exit
+    j exit
         
 Multiplication:
         #multiply the two user numbers
@@ -125,7 +126,7 @@ Multiplication:
         la $a0, ($t2)   #gets our product and executes to screen
         syscall
 
-        j exit
+ 	j exit
         
 Division:
         #divide the two user numbers
@@ -140,16 +141,13 @@ Division:
         li $v0, 1
         la $a0, ($t2)   #gets our quotient and executes to screen
         syscall
-
-        li $v0, 10
-        syscall #ends program
         
-        j exit
+   	j exit
 
 exit:
 #task3
         beq $s0, $s1, exactlyEqual #they are equal
-	bgt $s0, $s1, notEqual #they are not equal 
+	bne  $s0, $s1, notEqual #they are not equal 
 	
 exactlyEqual:	
 	#if $s0 and $s1 are exactly equal, print equalNumber
