@@ -27,6 +27,10 @@ main:
 	#code that will store the user's string
 	la $a0, buffer	#load buffer address
     	li $a1, 174
+
+	#loop counter
+	la $s0, buffer
+	move $t1, $zero
     	
 	la $s0, buffer
 	move $t0, $zero #counter that determines the number of incorrect guesses
@@ -46,10 +50,6 @@ getCharLoop:
 	li $v0, 11
 	lb $a0, guessedChar #test to see if it is actually getting the char
 	syscall
-
-	#loop counter
-	la $s0, buffer
-	move $t1, $zero
 
 	j loop#jumps to angie's loop that contains the function to increment the counter
 	
