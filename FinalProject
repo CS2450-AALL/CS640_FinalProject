@@ -1,0 +1,81 @@
+
+.data
+prompt1: .asciiz "Player 1: Please input a 5 letter word: "
+prompt2: .asciiz "\nPlayer 2: Enter a character: "
+hangmanDisplay: .asciiz "Hangman display: "
+lostPrompt: .asciiz "\n Sorry, you lost!"
+underscore: .asciiz "_"
+inputBuffer: .space 6
+guessedChar: .space 1
+buffer: .space 175
+
+.text
+main:
+	li $v0, 4
+	la $a0, prompt1
+	syscall
+	
+	
+	#gets 5 letter word from user: 
+	li $v0, 8
+	la $a0, inputBuffer #gets the user's string and stores it in $a0
+	syscall
+	li $a1, 5 #number of bytes the input will be obtained, ignore
+	syscall
+	#code that will store the user's string
+	la $a0, buffer	#load buffer address
+    	li $a1, 174
+    	
+	la $s0, buffer
+	move $t0, $zero #counter that determines the number of incorrect guesses
+	j getCharLoop
+	
+getCharLoop:
+	li $v0, 4
+	la $a0, prompt2
+	syscall
+
+	li $v0, 8
+	la $a0, guessedChar #the user's guessed char will be stored in $a0
+	syscall
+	li $a1, 1 #sets the buffer size to 1
+	syscall
+	
+	li $v0, 11
+	lb $a0, guessedChar #test to see if it is actually getting the char
+	syscall
+
+	j loop#jumps to angie's loop that contains the function to increment the counter
+	
+	j getCharLoop #oop repeats until $t0 equal to 5
+ 	
+ 	beq $t0, 5, exit #if counter equals to 5, print lost prompt and exit program
+	
+	
+	
+loop: #loop goes here
+	lb $t0, 0($s0)
+	beqz $t0, getCharLoop
+
+    	#Lesly's if else section :
+    	# Increment bodyPart counter
+    	addi $t0, $t0, 1
+
+    	# Return -1 + bodyPart
+    	li $v0, -1
+    	add $v0, $v0, $t0
+
+	addi $s0, $s0, 1
+	addi $t1,$t1,1
+	j loop
+
+exit: 
+	li $v0, 4
+	la $a0, lostPrompt
+	syscall
+	
+	li $v0, 10
+	syscall
+	
+	
+	
