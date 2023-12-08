@@ -16,9 +16,8 @@
 	beq $t0, 3, bp4
 	beq $t0, 4, bp5
 	beq $t0, 5, bp6
-	beq $t0, 6, lost
 	
-	#1 incorrect guess
+	#1 default
 bp1:	print_str(body1)
 	j getChar
 	
@@ -79,13 +78,13 @@ main:
     	li $v0, 5
     	syscall
     	
-    	print_str(spacer)
-    	
     	beq $v0, 1, play
     	beq $v0, 2, exit
     	
 
 play:    
+	print_str(spacer)
+	
 	print_str(prompt1)
     	# Prompt player 1 for input
     	li $v0, 8            # System call for read_string
@@ -147,6 +146,8 @@ different:
     	print_str(diff_msg)
 
     	addi $t0, $t0, 1
+    	
+    	beq $t0, 6, lost
     	
     	print_img
     	
