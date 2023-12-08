@@ -7,6 +7,7 @@
 	syscall
 .end_macro
 
+
 .macro print_img
 	#print the different body parts
 	beq $t0, 0, bp1
@@ -15,7 +16,7 @@
 	beq $t0, 3, bp4
 	beq $t0, 4, bp5
 	beq $t0, 5, bp6
-	beq $t0, 6, exit
+	beq $t0, 6, lost
 	
 	#1 incorrect guess
 bp1:	print_str(body1)
@@ -44,15 +45,19 @@ bp6:	print_str(body6)
 .end_macro
 
 .data
-menu: .asciiz "\nWelcome to the extreme game of Hangman!\n===========================\nRules:\n     - How to play: Have 1 player input any 5 letter string, and have player 2 guess the word\n     - HOWEVER, player 2 has to guess the characters in order, \n       if not, a body part will be added whether or not that letter is in the word\n\n===========================\n"
+intro: .asciiz "\nWelcome to the EXTREME game of Hangman!\n===========================\nRules:\n     - How to play: Have 1 player input any 5 letter string, and have player 2 guess the word\n     - HOWEVER, player 2 has to guess the characters in order, \n       if not, a body part will be added whether or not that letter is in the word\n\n===========================\n"
+menu: .asciiz "Menu:\n     1) Play Hangman\n     2) Exit"
+userChoice: .asciiz "\nPlease input an option: "
 prompt1: .asciiz "Player 1: Please input a 5 letter word: "
 prompt2: .asciiz "\nPlayer 2: Enter a character: "
 hangmanDisplay: .asciiz "Hangman display: "
 lostPrompt: .asciiz "\n Sorry, you lost!"
+winPrompt: .asciiz "\n Congrats, you won!"
 underscore: .asciiz "_"
 user_input:  .space  256   # Buffer to store user input
 guessedChar: .space 1
-
+exitPrompt: .asciiz "This program will now exit."
+spacer: .asciiz "\n===========================\n"
 
 same_msg: .asciiz "\nCharacters are the same."
 diff_msg: .asciiz "\nCharacters are different."
@@ -65,10 +70,22 @@ body6: .asciiz "\n  +---+\n  |   |\n  O   |\n /|\    |\n / \  |\n      |\n======
 
 .text
 main:
+    	print_str(intro)
+    	
     	print_str(menu)
     	
-    	print_str(body1)
-    
+    	print_str(userChoice)
+    	
+    	li $v0, 5
+    	syscall
+    	
+    	print_str(spacer)
+    	
+    	beq $v0, 1, play
+    	beq $v0, 2, exit
+    	
+
+play:    
 	print_str(prompt1)
     	# Prompt player 1 for input
     	li $v0, 8            # System call for read_string
@@ -88,9 +105,7 @@ main:
     	j getChar 
 
 getChar:
-    	li $v0, 4
-    	la $a0, prompt2
-    	syscall
+    	print_str(prompt2)
 
     	# Read a character from the user
     	li $v0, 12              # syscall: read_char
@@ -111,32 +126,38 @@ compareChars: # Loop to compare player 2's char from the inputted string
     		
 same:
     	# Display message for same characters
-    	li $v0, 4              # syscall: print_str
-    	la $a0, same_msg
-    	syscall
+    	print_str(same_msg)
     	
     	#move to next char of the string
     	addi $s1,$s1,1
     	
     	#if all letters are correctly guessed, exit
     	addi $t3, $t3, 1
-    	beq $t3, 5, exit
+    	beq $t3, 5, win
     	
     	print_img
     	
-    	j getChar #jump to get another char
-    	
+    	#j getChar #jump to get another char
+win:
+	print_str(winPrompt)
+	j main
+	
 different:
     	# Display message for different characters
-    	li $v0, 4              # syscall: print_str
-    	la $a0, diff_msg
-    	syscall
+    	print_str(diff_msg)
 
     	addi $t0, $t0, 1
+    	
     	print_img
     	
-    	j getChar
+    	#j getChar
+    	
+lost:
+	print_str(lostPrompt)
+	j main
 
 exit:
-    li $v0, 10
-    syscall
+	print_str(exitPrompt)
+
+    	li $v0, 10
+    	syscall
