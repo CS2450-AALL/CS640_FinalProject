@@ -1,186 +1,142 @@
-
-.data
-prompt1: .asciiz "Player 1: Please input a 5 letter word: "
-prompt2: .asciiz "\nPlayer 2: Enter a character: "
-hangmanDisplay: .asciiz "Hangman display: "
-lostPrompt: .asciiz "\n Sorry, you lost!"
-underscore: .asciiz "_"
-inputBuffer: .space 6
-guessedChar: .space 1
-buffer: .space 175
-string:	.asciiz %str
-wrongGuess: .asciiz "Sorry, that was an incorrect guess!"
-
-.text
-main:
-	li $v0, 4
-	la $a0, prompt1
-	syscall
-	
-	
-	#gets 5 letter word from user: 
-	li $v0, 8
-	la $a0, inputBuffer #gets the user's string and stores it in $a0
-	syscall
-	li $a1, 5 #number of bytes the input will be obtained, ignore
-	syscall
-	#code that will store the user's string
-	la $a0, buffer	#load buffer address
-    	li $a1, 174
-
-	#loop counter
-	la $s0, buffer
-	move $t1, $zero
-    	
-	la $s0, buffer
-	move $t0, $zero #counter that determines the number of incorrect guesses
-	j getCharLoop
-	
-getCharLoop:
-	li $v0, 4
-	la $a0, prompt2
-	syscall
-
-	li $v0, 8
-	la $a0, guessedChar #the user's guessed char will be stored in $a0
-	syscall
-	li $a1, 1 #sets the buffer size to 1
-	syscall
-	
-	li $v0, 11
-	lb $a0, guessedChar #test to see if it is actually getting the char
-	syscall
-
-	j loop#jumps to angie's loop that contains the function to increment the counter
-	
-	j getCharLoop #oop repeats until $t0 equal to 5
- 	
- 	beq $t0, 5, exit #if counter equals to 5, print lost prompt and exit program
-	
-	
-	
-loop: #loop goes here
-	lb $t0, 0($s0)
-	beqz $t0, getCharLoop
-
-    	#Lesly's if else section :
-    	# Increment bodyPart counter
-    	addi $t0, $t0, 1
-
-    	# Return -1 + bodyPart
-    	li $v0, -1
-    	add $v0, $v0, $t0
-
-	addi $s0, $s0, 1
-	addi $t1,$t1,1
-	j loop
+#EXTREME VERSION OF HANGMAN
+#only a correct guess if it is placed at the correct index
 
 .macro 	print_str (%str)  #prints the string of a given label
-	.text
 	li $v0, 4
-	la $a0, string
+	la $a0, %str
 	syscall
 .end_macro
 
 .macro print_img
 	#print the different body parts
-	beq $t0, 1, bp1
-	beq $t0, 2, bp2
-	beq $t0, 3, bp3
-	beq $t0, 4, bp4
-	beq $t0, 5, bp5
-	beq $t0, 6, bp6
-	print_str("  +---+")
-	print_str("  |   |")
-	print_str("      |")
-	print_str("      |")
-	print_str("      |")
-	print_str("      |")
-	print_str("=========")
-	li $v0, 4
-	la $a0, wrongGuess
-	syscall
+	beq $t0, 0, bp1
+	beq $t0, 1, bp2
+	beq $t0, 2, bp3
+	beq $t0, 3, bp4
+	beq $t0, 4, bp5
+	beq $t0, 5, bp6
+	beq $t0, 6, exit
 	
 	#1 incorrect guess
-bp1:	print_str("  +---+")
-	print_str("  |   |")
-	print_str("  O   |")
-	print_str("      |")
-	print_str("      |")
-	print_str("      |")
-	print_str("=========")
-	li $v0, 4
-	la $a0, wrongGuess
-	syscall
+bp1:	print_str(body1)
+	j getChar
 	
 	#2 incorrect guesses
-bp2:	print_str("  +---+")
-	print_str("  |   |")
-	print_str("  O   |")
-	print_str("  |   |")
-	print_str("      |")
-	print_str("      |")
-	print_str("=========")
-	li $v0, 4
-	la $a0, wrongGuess
-	syscall
-	
+bp2:	print_str(body2)
+	j getChar
+
 	#3 incorrect guesses
-bp3:	print_str("  +---+")
-	print_str("  |   |")
-	print_str("  O   |")
-	print_str(" /|   |")
-	print_str("      |")
-	print_str("      |")
-	print_str("=========")
-	li $v0, 4
-	la $a0, wrongGuess
-	syscall
-	
+bp3:	print_str(body3)
+	j getChar
+
 	#4 incorrect guesses
-bp4:	print_str("  +---+")
-	print_str("  |   |")
-	print_str("  O   |")
-	print_str(" /|\  |")
-	print_str("      |")
-	print_str("      |")
-	print_str("=========")
-	li $v0, 4
-	la $a0, wrongGuess
-	syscall
-	
+bp4:	print_str(body4)
+	j getChar
+
 	#5 incorrect guesses
-bp5:	print_str("  +---+")
-	print_str("  |   |")
-	print_str("  O   |")
-	print_str(" /|\  |")
-	print_str(" /    |")
-	print_str("      |")
-	print_str("=========")
-	li $v0, 4
-	la $a0, wrongGuess
-	syscall
-	
+bp5:	print_str(body5)
+	j getChar
+
 	#6 incorrect guesses
-bp6:	print_str("  +---+")
-	print_str("  |   |")
-	print_str("  O   |")
-	print_str(" /|\  |")
-	print_str(" / \  |")
-	print_str("      |")
-	print_str("=========")
-	li $v0, 4
-	la $a0, wrongGuess
-	syscall
+bp6:	print_str(body6)
+	j getChar
+		
 .end_macro
 
-exit: 
-	li $v0, 4
-	la $a0, lostPrompt
-	syscall
+.data
+menu: .asciiz "\nWelcome to the extreme game of Hangman!\n===========================\nRules:\n     - How to play: Have 1 player input any 5 letter string, and have player 2 guess the word\n     - HOWEVER, player 2 has to guess the characters in order, \n       if not, a body part will be added whether or not that letter is in the word\n\n===========================\n"
+prompt1: .asciiz "Player 1: Please input a 5 letter word: "
+prompt2: .asciiz "\nPlayer 2: Enter a character: "
+hangmanDisplay: .asciiz "Hangman display: "
+lostPrompt: .asciiz "\n Sorry, you lost!"
+underscore: .asciiz "_"
+user_input:  .space  256   # Buffer to store user input
+guessedChar: .space 1
+
+
+same_msg: .asciiz "\nCharacters are the same."
+diff_msg: .asciiz "\nCharacters are different."
+body1: .asciiz "\n  +---+\n  |   |\n  O   |\n      |\n      |\n      |\n=========\n"
+body2: .asciiz "\n  +---+\n  |   |\n  O   |\n  |   |\n      |\n      |\n=========\n"
+body3: .asciiz "\n  +---+\n  |   |\n  O   |\n /|    |\n      |\n      |\n=========\n"
+body4: .asciiz "\n  +---+\n  |   |\n  O   |\n /|\    |\n      |\n      |\n=========\n"
+body5: .asciiz "\n  +---+\n  |   |\n  O   |\n /|\   |\n /     |\n      |\n=========\n"
+body6: .asciiz "\n  +---+\n  |   |\n  O   |\n /|\    |\n / \  |\n      |\n=========\n"
+
+.text
+main:
+    	print_str(menu)
+    	
+    	print_str(body1)
+    
+	print_str(prompt1)
+    	# Prompt player 1 for input
+    	li $v0, 8            # System call for read_string
+    	la $a0, user_input    # Buffer to store user input
+    	li $a1, 256           # Maximum number of characters to read
+    	syscall
+
+	#load in address of string to $s1
+	la $s1, user_input
 	
-	li $v0, 10
-	syscall
-	
-	
-	
+    	# Loop counter for incorrect guesses
+    	li $t0, 0
+    	
+    	# Loop counter for correct guesses
+    	li $t3, 0
+
+    	j getChar 
+
+getChar:
+    	li $v0, 4
+    	la $a0, prompt2
+    	syscall
+
+    	# Read a character from the user
+    	li $v0, 12              # syscall: read_char
+    	syscall
+    	move $s0, $v0             # Save the character in $s0
+    	
+    	j compareChars
+
+compareChars: # Loop to compare player 2's char from the inputted string
+
+    	lb   $t1, ($s1)   # Load the next character, character is in $t1
+    	beq  $t1, $zero, getChar  # If it's the null terminator (end of the string), go to get another char from user
+
+    	beq $t1, $s0, same
+    	bne $t1, $s0, different
+
+    	j compareChars
+    		
+same:
+    	# Display message for same characters
+    	li $v0, 4              # syscall: print_str
+    	la $a0, same_msg
+    	syscall
+    	
+    	#move to next char of the string
+    	addi $s1,$s1,1
+    	
+    	#if all letters are correctly guessed, exit
+    	addi $t3, $t3, 1
+    	beq $t3, 5, exit
+    	
+    	print_img
+    	
+    	j getChar #jump to get another char
+    	
+different:
+    	# Display message for different characters
+    	li $v0, 4              # syscall: print_str
+    	la $a0, diff_msg
+    	syscall
+
+    	addi $t0, $t0, 1
+    	print_img
+    	
+    	j getChar
+
+exit:
+    li $v0, 10
+    syscall
