@@ -58,8 +58,8 @@ guessedChar: .space 1
 exitPrompt: .asciiz "This program will now exit."
 spacer: .asciiz "\n===========================\n"
 
-same_msg: .asciiz "\nCharacters are the same."
-diff_msg: .asciiz "\nCharacters are different."
+same_msg: .asciiz "\nYour guess is correct!"
+diff_msg: .asciiz "\nYour guess is incorrect."
 body1: .asciiz "\n  +---+\n  |   |\n  O   |\n      |\n      |\n      |\n=========\n"
 body2: .asciiz "\n  +---+\n  |   |\n  O   |\n  |   |\n      |\n      |\n=========\n"
 body3: .asciiz "\n  +---+\n  |   |\n  O   |\n /|    |\n      |\n      |\n=========\n"
@@ -80,7 +80,6 @@ main:
     	
     	beq $v0, 1, play
     	beq $v0, 2, exit
-    	
 
 play:    
 	print_str(spacer)
