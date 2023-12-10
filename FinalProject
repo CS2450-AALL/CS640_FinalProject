@@ -62,10 +62,10 @@ same_msg: .asciiz "\nYour guess is correct!"
 diff_msg: .asciiz "\nYour guess is incorrect."
 body1: .asciiz "\n  +---+\n  |   |\n  O   |\n      |\n      |\n      |\n=========\n"
 body2: .asciiz "\n  +---+\n  |   |\n  O   |\n  |   |\n      |\n      |\n=========\n"
-body3: .asciiz "\n  +---+\n  |   |\n  O   |\n /|    |\n      |\n      |\n=========\n"
-body4: .asciiz "\n  +---+\n  |   |\n  O   |\n /|\    |\n      |\n      |\n=========\n"
-body5: .asciiz "\n  +---+\n  |   |\n  O   |\n /|\   |\n /     |\n      |\n=========\n"
-body6: .asciiz "\n  +---+\n  |   |\n  O   |\n /|\    |\n / \  |\n      |\n=========\n"
+body3: .asciiz "\n  +---+\n  |   |\n  O   |\n /|   |\n      |\n      |\n=========\n"
+body4: .asciiz "\n  +---+\n  |   |\n  O   |\n /|\\  |\n      |\n      |\n=========\n"
+body5: .asciiz "\n  +---+\n  |   |\n  O   |\n /|\\  |\n /    |\n      |\n=========\n"
+body6: .asciiz "\n  +---+\n  |   |\n  O   |\n /|\\  |\n / \\  |\n      |\n=========\n"
 
 .text
 main:
