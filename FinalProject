@@ -21,23 +21,23 @@
 bp1:	print_str(body1)
 	j getChar
 	
-	#2 incorrect guesses
+	#1 incorrect guess
 bp2:	print_str(body2)
 	j getChar
 
-	#3 incorrect guesses
+	#2 incorrect guess
 bp3:	print_str(body3)
 	j getChar
 
-	#4 incorrect guesses
+	#3 incorrect guess
 bp4:	print_str(body4)
 	j getChar
 
-	#5 incorrect guesses
+	#4 incorrect guess
 bp5:	print_str(body5)
 	j getChar
 
-	#6 incorrect guesses
+	#5 incorrect guess
 bp6:	print_str(body6)
 	j getChar
 		
